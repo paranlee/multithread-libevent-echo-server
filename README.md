@@ -18,21 +18,25 @@ See the accompanying LICENSE.txt for details.
 
 Libevent is a nice library for handling and dispatching events, as well as doing nonblocking I/O.
 
-This is fine, except that it is basically single-threaded 
+This is fine, except that it is basically single-threaded.
 
-### single-threaded
+### Do not under-utilize your computing resource
 
-which means that if you have multiple CPUs or a CPU with hyperthreading, 
+If you have multiple CPUs or a CPU with hyperthreading, 
 
-you're really under-utilizing the CPU resources available to your server application 
+you're really under-utilizing the CPU resources available to your server application.
 
-because your event pump is running in a single thread and therefore can only use one CPU core at a time.
+Because your event pump is running in a single thread and therefore can only use one CPU core at a time.
 
 ### Event Queueing
 
-The solution is to create one libevent event queues (AKA event_base) per active connection, each with its own event pump thread.  
+The solution is to create one libevent event queues (AKA event_base) per active connection, 
 
-This project does exactly that, giving you everything you need to write high-performance, multi-threaded, libevent-based socket servers.
+each with its own event pump thread.  
+
+This project does exactly that, 
+
+giving you everything you need to write high-performance, multi-threaded, libevent-based socket servers.
 
 There are mentionings of running libevent in a multithreaded implementation, 
 
