@@ -10,7 +10,7 @@
 #include <string.h>
 #include "workqueue.h"
 
-#define LL_ADD(item, list) \ 
+#define LL_ADD(item, list) \
 	do { \
 		item->prev = NULL; \
 		item->next = list; \
