@@ -108,14 +108,6 @@ static void closeAndFreeClient(client_t *client) {
 	}
 }
 
-
-
-
-
-
-
-
-
 /**
  * Called by libevent when there is data to read.
  */
