@@ -36,10 +36,11 @@
 
 /* Behaves similarly to fprintf(stderr, ...), but adds file, line, and function
  information. */
-#define errorOut(...) {\
-	fprintf(stderr, "%s:%d: %s():\t", __FILE__, __LINE__, __FUNCTION__);\
-	fprintf(stderr, __VA_ARGS__);\
-}
+#define errorOut(...) \
+	do { \
+		fprintf(stderr, "%s:%d: %s():\t", __FILE__, __LINE__, __FUNCTION__); \
+		fprintf(stderr, __VA_ARGS__); \
+	} while(0)
 
 /**
  * Struct to carry around connection (client)-specific data.
