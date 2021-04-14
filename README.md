@@ -6,21 +6,21 @@ This software is licensed under the BSD license.
 
 See the accompanying LICENSE.txt for details.
 
-### To compile
+## To compile
 
     gcc -o echoserver_threaded echoserver_threaded.c workqueue.c -levent -lpthread
 
-### To run
+## To run
 
     ./echoserver_threaded
 
-### Using nice libevent
+## Using nice libevent
 
 Libevent is a nice library for handling and dispatching events, as well as doing nonblocking I/O.
 
 This is fine, except that it is basically single-threaded.
 
-### Do not under-utilize your computing resource
+## Do not under-utilize your computing resource
 
 If you have multiple CPUs or a CPU with hyperthreading, 
 
@@ -28,7 +28,7 @@ you're really under-utilizing the CPU resources available to your server applica
 
 Because your event pump is running in a single thread and therefore can only use one CPU core at a time.
 
-### Event Queueing
+## Event Queueing
 
 The solution is to create one libevent event queues (AKA event_base) per active connection, 
 
@@ -44,7 +44,7 @@ however it is very difficult (if not impossible) to find working implementations
 
 This project is a working implementation of a multi-threaded, libevent-based socket server.
 
-### Testing
+## Testing
 
 The server itself simply echoes whatever you send to it.  
 
@@ -62,7 +62,7 @@ then farms the actual handling of those connections out to a pool of worker thre
 
 Each connection has its own isolated event queue.
 
-### Have a lot of fun
+## Have a lot of fun
 
 In theory, for maximum performance, the number of worker threads should be set to the number of CPU cores available.  
 
@@ -74,7 +74,7 @@ Since the code is BSD licensed, you are free to use the source code however you 
 
 Some inspiration and coding ideas came from echoserver and cliserver, both of which are single-threaded, libevent-based servers.
 
-### Reference
+## References
 
 [Echoserver link](http://ishbits.googlecode.com/svn/trunk/libevent-examples/echo-server/libevent_echosrv1.c)
 
