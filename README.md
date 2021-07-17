@@ -74,13 +74,13 @@ foo@bar:~/multithread-libevent-echo-server$ cd src
 ### GCC
 
 ```console
-foo@bar:~/multithread-libevent-echo-server/src$ gcc -o ../build/server.o server.c workqueue.c -levent -lpthread
+foo@bar:~/multithread-libevent-echo-server$ gcc -o ../build/server.o src/server.c src/workqueue.c -levent -lpthread
 ```
 
-### clnag
+### clang
 
 ```console
-foo@bar:~/multithread-libevent-echo-server/src$ clang-12 -o ../build/server.o server.c workqueue.c -levent -lpthread
+foo@bar:~/multithread-libevent-echo-server$ clang-12 -o ../build/server.o src/server.c src/workqueue.c -levent -lpthread
 ```
 
 # Test Echo

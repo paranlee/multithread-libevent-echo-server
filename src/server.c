@@ -30,7 +30,7 @@
 #include "workqueue.h"
 
 /* Port to listen on. */
-#define SERVER_PORT 8080
+#define DEFULT_SERVER_PORT 8080
 
 /* Connection backlog (# of backlogged connections to accept). */
 #define CONNECTION_BACKLOG 8
@@ -138,6 +138,8 @@ void buffered_on_read(struct bufferevent *bev, void *arg) {
         /* Remove a chunk of data from the input buffer, copying it into our local array (data). */
         if (nbytes > 4096) nbytes = 4096;
         evbuffer_remove(bev->input, data, nbytes); 
+
+        printf("client [%d]: %s", client->fd, data);
         /* Add the chunk of data from our local array (data) to the client's output buffer. */
         evbuffer_add(client->output_buffer, data, nbytes);
     }
@@ -281,7 +283,7 @@ void on_accept(int fd, short ev, void *arg) {
  * Run the server.
  * This function blocks, only returning when the server has terminated.
  */
-int runServer(void) {
+int runServer(int port) {
     int listenfd;
     struct sockaddr_in listen_addr;
     struct event ev_accept;
@@ -309,7 +311,7 @@ int runServer(void) {
     memset(&listen_addr, 0, sizeof(listen_addr));
     listen_addr.sin_family = AF_INET;
     listen_addr.sin_addr.s_addr = INADDR_ANY;
-    listen_addr.sin_port = htons(SERVER_PORT);
+    listen_addr.sin_port = htons(port);
     if (bind(listenfd, (struct sockaddr *)&listen_addr, sizeof(listen_addr)) < 0) {
         err(1, "bind failed");
     }
@@ -347,7 +349,7 @@ int runServer(void) {
     event_base_set(evbase_accept, &ev_accept);
     event_add(&ev_accept, NULL);
 
-    printf("Server running in port %d.\n", SERVER_PORT);
+    printf("Server running in port %d.\n", port);
 
     /* Start the event loop. */
     event_base_dispatch(evbase_accept);
@@ -387,5 +389,6 @@ static void sighandler(int signal) {
  *  You can remove this and simply call runServer() from your application. 
  */
 int main(int argc, char *argv[]) {
-    return runServer();
+    int port = atoi(argv[1]) ? : DEFULT_SERVER_PORT;
+    return runServer(port);
 }
