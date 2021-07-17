@@ -14,6 +14,7 @@
  */
 
 #include <sys/types.h>
+#include <sys/sysinfo.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -38,12 +39,6 @@
 /* Socket read and write timeouts, in seconds. */
 #define SOCKET_READ_TIMEOUT_SECONDS 10
 #define SOCKET_WRITE_TIMEOUT_SECONDS 10
-
-/**
- *  Number of worker threads.
- *  Should match number of CPU cores reported in /proc/cpuinfo. 
- */
-#define NUM_THREADS 8
 
 /**
  *  Behaves similarly to fprintf(stderr, ...), but adds file, line, and function
@@ -334,8 +329,19 @@ int runServer(int port) {
         return 1;
     }
 
-    /* Initialize work queue. */
-    if (workqueue_init(&workqueue, NUM_THREADS)) {
+    int nrhart = get_nprocs();
+    printf("This system has %d processors configured and "
+            "%d processors available.\n",
+            get_nprocs_conf(), get_nprocs());
+    /**
+     *  Get the number of processors to execute worker threads.
+     *  this match number of CPU cores reported in /proc/cpuinfo
+     *  that currently available in the system.
+     *
+     *  Initialize work queue.
+     */
+    printf("Run with %d hardware threads.\n", nrhart);
+    if (workqueue_init(&workqueue, nrhart)) {
         perror("Failed to create work queue");
         close(listenfd);
         workqueue_shutdown(&workqueue);
@@ -389,6 +395,6 @@ static void sighandler(int signal) {
  *  You can remove this and simply call runServer() from your application. 
  */
 int main(int argc, char *argv[]) {
-    int port = atoi(argv[1]) ? : DEFULT_SERVER_PORT;
+    int port = argc > 1 && atoi(argv[1]) > 0 ? : DEFULT_SERVER_PORT;
     return runServer(port);
 }
