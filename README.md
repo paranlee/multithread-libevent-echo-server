@@ -1,19 +1,5 @@
 # Multithreaded, libevent-based socket server.
 
-Copyright (c) 2012 Ronald Bennett Cemer
-
-This software is licensed under the BSD license.
-
-See the accompanying LICENSE.txt for details.
-
-## To compile
-
-    gcc -o echoserver_threaded echoserver_threaded.c workqueue.c -levent -lpthread
-
-## To run
-
-    ./echoserver_threaded
-
 ## Using nice libevent
 
 Libevent is a nice library for handling and dispatching events, as well as doing nonblocking I/O.
@@ -44,38 +30,109 @@ however it is very difficult (if not impossible) to find working implementations
 
 This project is a working implementation of a multi-threaded, libevent-based socket server.
 
-## Testing
+# Build
+
+Build output `server.o` is in `build` directory.
+
+You can choose each build method.
+
+## Build with bazel
+
+Bazel look up `src/BUILD` file.
+
+```console
+foo@bar:~/multithread-libevent-echo-server$ bazel build //src:server
+INFO: Analyzed target //src:server (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //src:server up-to-date:
+  bazel-bin/src/server
+INFO: Elapsed time: 0.121s, Critical Path: 0.00s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+```
+
+Then, copy executable file.
+
+```console
+foo@bar:~/multithread-libevent-echo-server$ cp bazel-bin/src/server build/server.o
+```
+
+## Build with Make
+
+```console
+foo@bar:~/multithread-libevent-echo-server$ make
+```
+
+## Using native CC
+
+Go to src directory.
+
+```console
+foo@bar:~/multithread-libevent-echo-server$ cd src 
+```
+
+### GCC
+
+```console
+foo@bar:~/multithread-libevent-echo-server/src$ gcc -o ../build/server.o server.c workqueue.c -levent -lpthread
+```
+
+### clnag
+
+```console
+foo@bar:~/multithread-libevent-echo-server/src$ clang-12 -o ../build/server.o server.c workqueue.c -levent -lpthread
+```
+
+# Test Echo
+
+## Run Server
+
+Server running in port defined in server.c `[SERVER_PORT]`.
+
+### Host server
+
+```console
+foo@bar:~/multithread-libevent-echo-server/build$./server.o
+Server running in [SERVER_PORT]
+```
+
+### Run on Docker
+
+Build Docker image.
+
+```console
+foo@bar:~/multithread-libevent-echo-server/$ podman build -t multithread-event-server .
+```
+
+Run container.
+
+```console
+foo@bar:~/multithread-libevent-echo-server/$ podman run -p 8080:8080 --name multithread-event-server multithread-event-server:latest
+Server running in [SERVER_PORT]
+```
+
+## Run on host client
 
 The server itself simply echoes whatever you send to it.  
 
-Start it up, then telnet to it:
+Start it up, then telnet
 
-    telnet localhost 5555
+```console
+foo@bar:~/telnet localhost 8080
+```
 
-Everything you type should be echoed back to you.
+# License
 
-The implementation is fairly standard.
+Copyright (c) 2012 Ronald Bennett Cemer
 
-The main thread listens on a socket and accepts new connections, 
+This software is licensed under the BSD license.
 
-then farms the actual handling of those connections out to a pool of worker threads.
+See the accompanying LICENSE.txt for details.
 
-Each connection has its own isolated event queue.
-
-## Have a lot of fun
-
-In theory, for maximum performance, the number of worker threads should be set to the number of CPU cores available.  
-
-Feel free to experiment with this.
-
-Also note that the server includes a multithreaded work queue implementation, which can be re-used for other purposes.
-
-Since the code is BSD licensed, you are free to use the source code however you wish, either in whole or in part.
-
-Some inspiration and coding ideas came from echoserver and cliserver, both of which are single-threaded, libevent-based servers.
-
-## References
+# References
 
 [Echoserver link](http://ishbits.googlecode.com/svn/trunk/libevent-examples/echo-server/libevent_echosrv1.c)
 
 [Cliserver link](http://nitrogen.posterous.com/cliserver-an-example-libevent-based-socket-se)
+
+[Bazel Build System with C](https://github.com/research-note/bazel-clang-c-example)
