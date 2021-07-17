@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -g -Wall
-OBJS = echoserver_threaded.c workqueue.c
+OBJS = src/server.c src/workqueue.c
 LDFLAGS = -levent -lpthread
-TARGET = echoserver_threaded.out
+TARGET = build/server.o
 
 all: $(TARGET)
 

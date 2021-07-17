@@ -1,2 +1,4 @@
-echoserver_threaded
 *.o
+*.out
+tags
+bazel-*
